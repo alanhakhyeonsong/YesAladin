@@ -9,7 +9,7 @@ YesAladin Shop은 애플리케이션 이용에 필요한 API를 제공함으로�
 
 ## ERD
 
-![ERD](http://drive.google.com/uc?export=view&id=1gE5gufiU6RAjOKba50ianKreUAw3hnl9)
+![예스알라딘-쇼핑몰-3 2 2](https://user-images.githubusercontent.com/60968342/233526675-fb3c116c-fccf-45b3-ba6e-cb6e98924ef4.png)
 
 
 ## Project Architecture
@@ -249,9 +249,6 @@ YesAladin Shop은 애플리케이션 이용에 필요한 API를 제공함으로�
 - Develop: 개발 단계가 끝난 부분에 대해 Merge 내용 포함
 - Feature: 기능 개발 단계
 - Hot-Fix: Merge 후 발생한 버그 및 수정 사항 반영 시 사용
-
-#### Dooray 칸반 보드 활용
-(스크린샷 첨부할 것)
 
 ## Contributors
 
