@@ -1,0 +1,28 @@
+= Payment(link:index.html[뒤로가기])
+
+=== 토스페이먼츠로부터 승인을 받기 위한 요청
+
+==== curl
+include::{snippets}/confirm-payment-to-Toss/curl-request.adoc[]
+
+
+==== request
+===== Body
+include::{snippets}/confirm-payment-to-Toss/request-fields.adoc[]
+
+===== Example
+include::{snippets}/confirm-payment-to-Toss/http-request.adoc[]
+
+
+==== response
+===== Body
+include::{snippets}/confirm-payment-to-Toss/response-fields.adoc[]
+
+===== Example
+include::{snippets}/confirm-payment-to-Toss/http-response.adoc[]
+
+==== * Fail response
+===== Example
+include::{snippets}/confirm-payment-fail/http-response.adoc[]
+
+---

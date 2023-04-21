@@ -1,0 +1,542 @@
+= Member (link:index.html[뒤로가기])
+notification-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:sectnums:
+
+
+=== 회원 닉네임 수정 실패 - 유효하지 않은 요청
+
+===== Example
+include::{snippets}/update-member-nickname-fail-validation-failed/response-body.adoc[]
+
+=== 회원 닉네임 수정 실패 - 존재하지 않는 회원인 경우
+
+===== Example
+include::{snippets}/update-member-nickname-fail-member-not-found/response-body.adoc[]
+
+=== 회원 닉네임 수정 성공
+
+==== curl
+include::{snippets}/update-member-nickname-success/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/update-member-nickname-success/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/update-member-nickname-success/response-fields.adoc[]
+
+===== Example
+include::{snippets}/update-member-nickname-success/http-response.adoc[]
+
+=== 회원 이름 수정 실패 - 유효하지 않은 요청
+
+==== Example
+include::{snippets}/update-member-name-fail-validation-failed/response-body.adoc[]
+
+=== 회원 이름 수정 실패 - 존재하지 않는 회원인 경우
+
+==== Example
+include::{snippets}/update-member-name-fail-member-not-found/response-body.adoc[]
+
+=== 회원 이름 수정 성공
+
+==== curl
+include::{snippets}/update-member-name-success/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/update-member-name-success/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/update-member-name-success/response-fields.adoc[]
+
+===== Example
+include::{snippets}/update-member-name-success/http-response.adoc[]
+
+=== 회원 이메일 수정 실패 - 유효하지 않은 요청
+
+==== Example
+include::{snippets}/update-member-email-fail-validation-failed/response-body.adoc[]
+
+=== 회원 이메일 수정 실패 - 존재하지 않는 회원인 경우
+
+==== Example
+include::{snippets}/update-member-email-fail-member-not-found/response-body.adoc[]
+
+=== 회원 이메일 수정 성공
+
+==== curl
+include::{snippets}/update-member-email-success/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/update-member-email-success/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/update-member-email-success/response-fields.adoc[]
+
+===== Example
+include::{snippets}/update-member-email-success/http-response.adoc[]
+
+=== 회원 전화번호 수정 실패 - 유효하지 않은 요청
+
+==== Example
+include::{snippets}/update-member-phone-fail-validation-failed/response-body.adoc[]
+
+=== 회원 전화번호 수정 실패 - 존재하지 않는 회원인 경우
+
+==== Example
+include::{snippets}/update-member-phone-fail-member-not-found/response-body.adoc[]
+
+=== 회원 전화번호 수정 성공
+
+==== curl
+include::{snippets}/update-member-phone-success/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/update-member-phone-success/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/update-member-phone-success/response-fields.adoc[]
+
+===== Example
+include::{snippets}/update-member-phone-success/http-response.adoc[]
+
+=== 회원 패스워드 수정 실패 - 유효하지 않은 요청
+
+==== Example
+include::{snippets}/update-member-password-fail-validation-failed/response-body.adoc[]
+
+=== 회원 패스워드 수정 실패 - 존재하지 않는 회원인 경우
+
+==== Example
+include::{snippets}/update-member-password-fail-member-not-found/response-body.adoc[]
+
+=== 회원 패스워드 수정 성공
+
+==== curl
+include::{snippets}/update-member-password-success/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/update-member-password-success/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/update-member-password-success/response-fields.adoc[]
+
+===== Example
+include::{snippets}/update-member-password-success/http-response.adoc[]
+
+=== 회원 탈퇴
+
+==== curl
+include::{snippets}/withdraw-member-success/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/withdraw-member-success/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/withdraw-member-success/response-fields.adoc[]
+
+===== Example
+include::{snippets}/withdraw-member-success/http-response.adoc[]
+
+
+=== 회원 탈퇴 실패
+
+==== request
+
+===== Example
+====== 찾을 수 없는 회원
+include::{snippets}/withdraw-member-fail-member-not-found/response-body.adoc[]
+
+=== 생일인 회원 조회
+
+==== curl
+
+include::{snippets}/get-member-id-list-by-birthday-success/curl-request.adoc[]
+
+==== request
+
+==== Parameters
+
+include::{snippets}/get-member-id-list-by-birthday-success/request-parameters.adoc[]
+
+===== Example
+
+include::{snippets}/get-member-id-list-by-birthday-success/http-request.adoc[]
+
+==== response (Success)
+
+===== Body
+
+include::{snippets}/get-member-id-list-by-birthday-success/response-body.adoc[]
+
+===== Example
+
+include::{snippets}/get-member-id-list-by-birthday-success/http-response.adoc[]
+
+
+=== 회원의 loginId 중복 여부 판단
+
+==== curl
+include::{snippets}/existsLoginId/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/existsLoginId/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/existsLoginId/response-fields.adoc[]
+
+===== Example
+include::{snippets}/existsLoginId/response-body.adoc[]
+
+
+=== 회원의 nickname 중복 여부 판단
+
+==== curl
+include::{snippets}/existsNickname/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/existsNickname/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/existsNickname/response-fields.adoc[]
+
+===== Example
+include::{snippets}/existsNickname/response-body.adoc[]
+
+
+=== 회원의 email 중복 여부 판단
+
+==== curl
+include::{snippets}/existsEmail/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/existsEmail/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/existsEmail/response-fields.adoc[]
+
+===== Example
+include::{snippets}/existsEmail/response-body.adoc[]
+
+
+=== 회원의 phone 중복 여부 판단
+
+==== curl
+include::{snippets}/existsPhone/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/existsPhone/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/existsPhone/response-fields.adoc[]
+
+===== Example
+include::{snippets}/existsPhone/response-body.adoc[]
+
+
+=== 회원 통계용 데이터 조회
+
+==== curl
+include::{snippets}/get-member-statistics-success/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/get-member-statistics-success/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/get-member-statistics-success/response-fields.adoc[]
+
+===== Example
+include::{snippets}/get-member-statistics-success/response-body.adoc[]
+
+
+=== 회원 차단
+
+==== curl
+include::{snippets}/block-member-success/curl-request.adoc[]
+
+===== Example
+include::{snippets}/block-member-success/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/block-member-success/response-fields.adoc[]
+
+===== Example
+include::{snippets}/block-member-success/response-body.adoc[]
+
+
+=== 회원 차단 실패
+
+===== Example
+====== 이미 차단된 회원
+include::{snippets}/block-member-fail-already-blocked/response-body.adoc[]
+
+====== 찾을 수 없는 회원
+include::{snippets}/block-member-fail-member-not-found/response-body.adoc[]
+
+====== Validation 실패
+include::{snippets}/block-member-fail-validation-error/response-body.adoc[]
+
+
+=== 회원 차단 해지
+
+==== curl
+include::{snippets}/unblock-member-success/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/unblock-member-success/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/unblock-member-success/response-fields.adoc[]
+
+===== Example
+include::{snippets}/unblock-member-success/response-body.adoc[]
+
+
+=== 회원 본인의 등급 조회
+
+==== curl
+include::{snippets}/get-member-grade-success/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/get-member-grade-success/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/get-member-grade-success/response-fields.adoc[]
+
+===== Example
+include::{snippets}/get-member-grade-success/http-response.adoc[]
+
+
+=== 회원 본인의 등급 조회 실패
+
+==== Example
+
+===== 잘못된 파라미터
+include::{snippets}/get-member-grade-fail-invalid-parameter/response-body.adoc[]
+
+===== 잘못된 기간 조건
+include::{snippets}/get-member-grade-fail-invalid-period-condition/response-body.adoc[]
+
+===== 회원 본인의 정보 조회 실패
+include::{snippets}/get-member-grade-fail-member-not-found/response-body.adoc[]
+
+
+=== 회원 본인의 정보 조회
+
+==== curl
+include::{snippets}/get-member-info-success/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/get-member-info-success/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/get-member-info-success/response-fields.adoc[]
+
+===== Example
+include::{snippets}/get-member-info-success/response-body.adoc[]
+
+
+=== 회원 본인의 정보 조회 실패
+
+==== Example
+
+===== 찾을 수 없는 회원인 경우
+include::{snippets}/get-member-info-fail-member-not-found/response-body.adoc[]
+
+==== 관리자가 회원 조회
+
+==== curl
+include::{snippets}/manage-member-info/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/manage-member-info/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/manage-member-info/response-fields.adoc[]
+
+===== Example
+include::{snippets}/manage-member-info/response-body.adoc[]
+
+=== 관리자가 로그인 아이디로 회원 조회
+
+==== curl
+include::{snippets}/manage-member-info-by-login-id/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/manage-member-info-by-login-id/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/manage-member-info-by-login-id/response-fields.adoc[]
+
+===== Example
+include::{snippets}/manage-member-info-by-login-id/response-body.adoc[]
+
+=== 관리자가 닉네임으로 회원 조회
+
+==== curl
+include::{snippets}/manage-member-info-by-nickname/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/manage-member-info-by-nickname/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/manage-member-info-by-nickname/response-fields.adoc[]
+
+===== Example
+include::{snippets}/manage-member-info-by-nickname/response-body.adoc[]
+
+=== 관리자가 이름으로 회원 조회
+
+==== curl
+include::{snippets}/manage-member-info-by-name/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/manage-member-info-by-name/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/manage-member-info-by-name/response-fields.adoc[]
+
+===== Example
+include::{snippets}/manage-member-info-by-name/response-body.adoc[]
+
+=== 관리자가 핸드폰으로 회원 조회
+
+==== curl
+include::{snippets}/manage-member-info-by-phone/curl-request.adoc[]
+
+==== request
+
+===== Example
+
+include::{snippets}/manage-member-info-by-phone/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/manage-member-info-by-phone/response-fields.adoc[]
+
+===== Example
+include::{snippets}/manage-member-info-by-phone/response-body.adoc[]
+
+=== 관리자가 회원 가입날로 회원 조회
+
+==== curl
+include::{snippets}/manage-member-info-by-sign-up-date/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/manage-member-info-by-sign-up-date/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/manage-member-info-by-sign-up-date/response-fields.adoc[]
+
+===== Example
+include::{snippets}/manage-member-info-by-sign-up-date/response-body.adoc[]
+
+=== 회원 본인의 패스워드 조회
+
+==== curl
+include::{snippets}/get-member-password-success/curl-request.adoc[]
+
+==== request
+
+===== Example
+include::{snippets}/get-member-password-success/http-request.adoc[]
+
+==== response
+
+===== Body
+include::{snippets}/get-member-password-success/response-fields.adoc[]
+
+===== Example
+include::{snippets}/get-member-password-success//response-body.adoc[]
+
+
+=== 회원 본인의 패스워드 조회 실패
+
+==== Example
+
+===== 찾을 수 없는 회원인 경우
+include::{snippets}/get-member-password-fail-member-not-found/response-body.adoc[]
