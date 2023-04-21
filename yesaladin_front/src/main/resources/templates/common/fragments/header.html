@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body th:fragment="fragment-header">
+<header class="navbar navbar-expand-md navbar-light d-print-none">
+  <div class="container-xl">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbar-menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- TODO 1 Yes Aladin Logo
+          * img 태그에 src 작성하기 -->
+    <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+      <a href="/">
+        <img th:src="@{~/img/logo/logo.png}" height="50" class="navbar-brand-image d-inline w-auto">
+        <span class="text-primary d-inline">Yes! Aladin</span>
+      </a>
+    </h1>
+    <div class="navbar-nav float-end">
+      <!-- 장바구니 -->
+      <div sec:authorize="!isAuthenticated()" class="float-end my-auto d-inline m-3">
+        <a href="/orders/find-non-member-order" id="find-non-member-order"
+           class="text-muted w-100">비회원 주문 조회</a>
+      </div>
+      <div class="d-md-flex d-inline">
+        <a href="/cart" class="nav-link px-0" data-bs-toggle="tooltip" data-bs-placement="bottom">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shopping-cart" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+            <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+            <path d="M17 17h-11v-14h-2"></path>
+            <path d="M6 5l14 1l-1 7h-13"></path>
+          </svg>
+        </a>
+      </div>
+      <div sec:authorize="!isAuthenticated()" class="float-end my-auto d-inline">
+        <a href="/members/login" class="d-inline btn btn-primary">Login</a>
+        <a href="/members/signup" class="d-inline btn btn-outline-primary">SignUp</a>
+      </div>
+      <div class="nav-item dropdown" sec:authorize="isAuthenticated()">
+        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown"
+           aria-label="Open user menu">
+          <div class="d-xl-block ps-2">
+            <div>
+              <span th:text="${#authentication.name}"></span> 님 안녕하세요!
+            </div>
+          </div>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+          <div sec:authorize="hasRole('ROLE_ADMIN')">
+            <a href="/manager" class="dropdown-item">관리자 페이지</a>
+          </div>
+          <div sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_AUTHOR')">
+            <a href="/mypage" class="dropdown-item">마이 페이지</a>
+            <a href="/logout" class="dropdown-item">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+</body>
+
+</html>

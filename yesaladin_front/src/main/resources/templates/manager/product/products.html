@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta5
+* @link https://tabler.io
+* Copyright 2018-2022 The Tabler Authors
+* Copyright 2018-2022 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+  <title>Yes Aladin!</title>
+  <!-- CSS files -->
+  <link th:href="@{/css/tabler.min.css}" rel="stylesheet"/>
+  <link th:href="@{/css/tabler-flags.min.css}" rel="stylesheet"/>
+  <link th:href="@{/css/tabler-payments.min.css}" rel="stylesheet"/>
+  <link th:href="@{/css/tabler-vendors.min.css}" rel="stylesheet"/>
+  <link th:href="@{/css/demo.min.css}" rel="stylesheet"/>
+</head>
+<body>
+  <!-- Libs JS -->
+  <script type="text/javascript" th:src="@{/libs/apexcharts/dist/apexcharts.min.js}"></script>
+  <!-- Tabler Core -->
+  <script type="text/javascript" th:src="@{/js/tabler.min.js}"></script>
+  <script type="text/javascript" th:src="@{/js/demo.min.js}"></script>
+
+  <div class="wrapper">
+
+  <!-- TODO 1 : NAV-BAR -->
+  <div th:replace="~{manager/fragments/navbar-vertical :: fragment-nav-vertical}"></div>
+
+  <!-- TODO 2 : HEADER -->
+  <div class="page-wrapper">
+    <div th:replace="~{common/fragments/header :: fragment-header}"></div>
+    <div class="page-header d-print-none">
+      <div class="container-fill mx-4">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              상품 관리
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+            <div class="btn-list">
+              <a th:href="@{/manager/products/form}" class="btn btn-primary d-none d-sm-inline-block">
+                <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                상품 등록
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODO 3: BODY -->
+    <div class="page-body container-fill mx-4">
+      <div class="card">
+        <div class="card-header row">
+          <h3 class="card-title col-md-2">상품 관리</h3>
+          <div class="col-md-4">
+            <select id="select-type" th:name="productType" class="form-select" onchange="selectType(this.value)">
+              <option value="">전체</option>
+              <option th:each="type : ${types}" th:value="${type.id}" th:text="${type.getKoName()}" th:selected="${type.id == typeId}"></option>
+            </select>
+          </div>
+        </div>
+        <div class="card-header row">
+          <h3 class="card-title col-md-2">검색</h3>
+          <div class="col-md-1">
+            <select id="selected" class="form-select w-auto" name="selected">
+              <option value="title">제목</option>
+              <option value="content">내용</option>
+              <option value="isbn">ISBN</option>
+              <option value="author">저자</option>
+              <option value="publisher">출판사</option>
+            </select>
+          </div>
+          <div class="col-md-7">
+            <input id="input" type="text" class="form-control w-75" placeholder="Search…"
+                   aria-label="Search in website"/>
+          </div>
+          <div class="col-md-2">
+            <button id="searchButton" type="button" class="btn btn-primary w-auto">Search</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table card-table table-vcenter text-nowrap datatable">
+            <thead>
+              <tr>
+                <th class="w-1">No.</th>
+                <th>상품 제목</th>
+                <th>저자</th>
+                <th>출판사</th>
+                <th>출판일</th>
+                <th>판매가(할인율)</th>
+                <th>수량</th>
+                <th>판매여부</th>
+                <th>강제품절여부</th>
+                <th>노출여부</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="product, i : ${products}">
+                <td class="text-center"><span class="text-muted" th:text="${currentPage * size + i.count}"></span></td>
+                <td><a class="text-dark d-inline-block" th:text="${product.title}" th:href="|/products/${product.id}|" style="overflow: hidden; text-overflow: ellipsis; max-width: 400px;"/></td>
+                <td>
+                  <div th:each="author, j : ${product.authors}" style="display: inline">
+                    <p th:text="${author.name}" style="display: inline"></p>
+                    <p th:if="${!j.last}" style="display: inline">|</p>
+                  </div>
+                </td>
+                <td th:text="${product.publisher.name}"></td>
+                <td th:text="${product.publishedDate}"></td>
+                <td th:text="|${#numbers.formatInteger(product.sellingPrice, 1, 'COMMA')}원(${product.discountRate}% 할인)|"></td>
+
+                <td class="text-center"><p th:if="${!product.isDeleted}" th:text="${product.quantity}" style="margin: 0"></p></td>
+                <td class="text-center">
+                  <label class="form-check form-switch" style="margin: 0;padding-left: 45px;" th:if="${!product.isDeleted}">
+                    <input class="form-check-input" type="checkbox"
+                           th:checked="${product.isSale}" th:onclick="|changeIsSale(${product.id})|">
+                  </label>
+                </td>
+                <td class="text-center">
+                  <label class="form-check form-switch" style="margin: 0;padding-left: 50px;" th:if="${!product.isDeleted}">
+                    <input class="form-check-input" type="checkbox"
+                           th:checked="${product.isForcedOutOfStock}" th:onclick="|changeIsForcedOutOfStock(${product.id})|">
+                  </label>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-success me-1" th:if="${product.isShown}">Yes</span>
+                  <span class="badge bg-warning me-1" th:if="${!product.isShown}">No</span>
+                </td>
+
+                <td>
+                  <a th:href="|/manager/products/${product.id}/relations|" class="btn btn-dark btn-pill w-auto fs-5">
+                    연관관계
+                  </a>
+                  <a href="#" class="btn btn-dark btn-pill w-auto fs-5 btn-modal" data-bs-toggle="modal" data-bs-target="#modal-ebook-download"
+                     th:data-url="${product.ebookFileUrl}" th:data-title="${product.title}" th:classappend="${product.ebookFileUrl == null ? 'd-none' : ''}">
+                    E-book
+                  </a>
+                </td>
+                <td>
+                  <a th:href="|/manager/products/${product.id}|" class="btn btn-dark btn-pill w-auto fs-5">
+                    수정
+                  </a>
+                  <a href="#" class="btn btn-secondary btn-pill w-auto fs-5 btn-modal" data-bs-toggle="modal" data-bs-target="#modal-delete-confirm"
+                     th:data-id="${product.id}" th:data-title="${product.title}" th:classappend="${product.isDeleted ? 'disabled' : ''}">
+                    삭제
+                  </a>
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div th:replace="~{common/utils/paging-bar :: paging('/manager/products', ${typeId == null ? '' : '&typeId=' + typeId + '&' + selected + '=' + input})}"></div>
+      </div>
+    </div>
+    <!-- TODO 4 : footer -->
+    <div th:replace="~{common/fragments/footer :: fragment-footer}"></div>
+
+    </div>
+  </div>
+  <div class="modal modal-blur fade" id="modal-delete-confirm" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-status bg-danger"></div>
+        <div class="modal-body text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 9v2m0 4v.01"></path><path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path></svg>
+          <h3>해당 상품을 삭제하시겠습니까?</h3>
+          <div class="text-muted">삭제한 상품은 복구할 수 없습니다.<br/> 그래도 진행하시겠습니까?<br/><br/> 삭제할 상품: <p style="display: inline;" id="modal-product-title-id"></p></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">취소</button>
+          <button type="submit" class="btn btn-danger" data-bs-dismiss="modal" id="modal-product-delete">네, 삭제합니다.</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal modal-blur fade" id="modal-ebook-download" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-status bg-success"></div>
+        <div class="modal-body text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-green icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path><path d="M9 12l2 2l4 -4"></path></svg>
+          <h3>해당 상품의 E-Book을 다운로드 받으시겠습니까?</h3>
+          <div class="text-muted"><br/>다운로드받을 상품: <p style="display: inline;" id="modal-ebook-url"></p></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">취소</button>
+          <a class="btn btn-success" data-bs-dismiss="modal" id="modal-ebook-download-button" download>네, 다운로드합니다.</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const modalDelete = document.getElementById('modal-delete-confirm');
+    const titleId = document.getElementById('modal-product-title-id');
+    modalDelete.addEventListener('show.bs.modal', function (event) {
+      titleId.value = event.relatedTarget.getAttribute('data-id').toString();
+      titleId.innerText = event.relatedTarget.getAttribute('data-title').toString();
+    });
+
+    const deleteButton = document.getElementById('modal-product-delete');
+    deleteButton.addEventListener('click', function (event) {
+      fetch(location.origin.toString() + "/manager/products/" + titleId.value + "/delete", {
+        method: "POST"
+      })
+      .then(res => window.location.reload())
+      .catch(err => {
+        window.alert(err);
+      });
+    });
+
+    function changeIsSale(id) {
+      fetch(location.origin.toString() + '/manager/products/' + id + "/is-sale", {
+        method: "POST"
+      }).then(res => window.location.reload());
+    }
+
+    function changeIsForcedOutOfStock(id) {
+      fetch(location.origin.toString() + '/manager/products/' + id + "/is-forced-out-of-stock", {
+        method: "POST"
+      }).then(res => window.location.reload());
+    }
+
+    function selectType(typeId) {
+      if (typeId === '') {
+        window.location.href = '/manager/products';
+      } else {
+        window.location.href = '/manager/products?typeId=' + typeId;
+      }
+    }
+  </script>
+  <script>
+    const modalDownload = document.getElementById('modal-ebook-download');
+    const ebookUrl = document.getElementById('modal-ebook-url');
+    const downloadButton = document.getElementById('modal-ebook-download-button');
+    let url;
+    modalDownload.addEventListener('show.bs.modal', function (event) {
+      ebookUrl.value = event.relatedTarget.getAttribute('data-url').toString();
+      ebookUrl.innerText = event.relatedTarget.getAttribute('data-title').toString();
+
+      url = `${location.origin}/files/file-download?url=${event.relatedTarget.getAttribute('data-url').toString()}`;
+      downloadButton.href = url;
+    });
+
+    downloadButton.addEventListener('click', async function (event) {
+      const response = await fetch(url);
+      const lastIndex = ebookUrl.value.toString().lastIndexOf("/");
+      const fileName = ebookUrl.value.toString().substring(lastIndex);
+
+      const body = await response.blob();
+      const blobUrl = URL.createObjectURL(body);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.style.display = "hidden";
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+    });
+  </script>
+
+<script>
+  const input = document.getElementById('input')
+  input.addEventListener('keyup', function (e) {
+    if(e.key === 'Enter') {
+      search()
+    }
+  })
+  document.getElementById('searchButton').addEventListener('click', function (e) {
+    e.preventDefault()
+    search()
+  })
+
+  function search(){
+    if (input.value.length > 30) {
+      alert('최대 글자 수는 30까지 허용합니다.')
+      return
+    }
+    const selected = document.getElementById('selected')
+    location.replace('/manager/products?' + selected.options[selected.selectedIndex].value + '=' + input.value)
+  }
+</script>
+</body>
+</html>

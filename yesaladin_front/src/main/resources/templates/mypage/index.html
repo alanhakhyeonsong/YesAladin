@@ -1,0 +1,420 @@
+<!doctype html>
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta5
+* @link https://tabler.io
+* Copyright 2018-2022 The Tabler Authors
+* Copyright 2018-2022 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+  <title>Yes Aladin!</title>
+  <!-- CSS files -->
+  <link th:href="@{/css/tabler.min.css}" rel="stylesheet"/>
+  <link th:href="@{/css/tabler-flags.min.css}" rel="stylesheet"/>
+  <link th:href="@{/css/tabler-payments.min.css}" rel="stylesheet"/>
+  <link th:href="@{/css/tabler-vendors.min.css}" rel="stylesheet"/>
+  <link th:href="@{/css/demo.min.css}" rel="stylesheet"/>
+</head>
+<body>
+<!-- Libs JS -->
+<script type="text/javascript" th:src="@{/libs/apexcharts/dist/apexcharts.min.js}"></script>
+<!-- Tabler Core -->
+<script type="text/javascript" th:src="@{/js/tabler.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/demo.min.js}"></script>
+
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+<script>
+  $(document).ready( function() {
+    $('.multiple-items').slick({
+      infinite: true,
+      slidesToShow: 4,
+      slidesToScroll: 4,
+      dots: true,
+      autoplay: true,
+      autoplaySpeed: 5000,
+      draggable: true,
+      pauseOnHover : true
+    });
+  } );
+</script>
+
+<div class="wrapper">
+  <!-- TODO 1 : Head -->
+  <div th:replace="~{common/fragments/header :: fragment-header}"></div>
+  <!-- TODO 2 : NAV-BAR -->
+  <div th:replace="~{common/fragments/navbar :: fragment-nav-bar}"></div>
+
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              마이 페이지
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="card">
+          <div class="row g-0">
+            <div class="col-xl-3 col-lg-3 bg-secondary-lt">
+              <div class="card-body">
+                <div th:replace="~{mypage/fragments/sidebar :: fragment-side-bar}"></div>
+              </div>
+            </div>
+            <div class="col-xl-9 col-lg-9" id="mypage"
+                 th:data-url="${@environment.getProperty('yesaladin.front.url')}"
+                 th:data-shop-url="${@environment.getProperty('yesaladin.gateway.shop')}">
+              <div class="card-body">
+                <!-- TODO 3: BODY -->
+                <h1 class="text-end" th:text="${#authentication.name +' 님 안녕하세요'}"></h1>
+                <div class="row row-cards mb-3">
+                  <div class="col-xl-5 col-md-5">
+                    <div class="card" id="grade-box">
+                      <div class="card-header d-block">
+                        <h3 class="card-title d-inline">
+                          회원 등급
+                          <span id="member-grade" class="card-subtitle ms-1 float-end text-muted"
+                                th:text="${grade.name()}"></span>
+                        </h3>
+                      </div>
+                      <div class="card-body m-auto">
+                        <a href="/mypage/grade-history"
+                           class="btn btn-outline-secondary btn-sm d-inline">회원 등급변경 내역</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-7 col-md-7">
+                    <div class="card">
+                      <div class="card-header d-block">
+                        <h3 class="card-title d-inline">
+                          포인트
+                          <span id="member-point" class="card-subtitle ms-1 float-end text-muted"
+                                th:text="${point + '원'}"></span>
+                        </h3>
+                      </div>
+                      <div class="card-body m-auto">
+                        <a href="/mypage/point-history"
+                           class="btn btn-outline-secondary btn-sm d-inline m-1">포인트 이용 내역</a>
+                        <a href="#" class="btn btn-primary btn-sm d-inline m-1">포인트 충전</a>
+                        <a href="#" class="btn btn-info btn-sm d-inline m-1">포인트 선물</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row row-cards mb-3">
+                  <div class="col-xl-5 col-md-5">
+                    <div class="card">
+                      <div class="card-header d-block">
+                        <h3 class="card-title d-inline">
+                          쿠폰
+                          <span class="card-subtitle ms-1 float-end text-muted"
+                                th:text="|${coupon}개|"></span>
+                        </h3>
+                      </div>
+                      <div class="card-body m-auto">
+                        <a class="btn btn-outline-secondary btn-sm d-inline"
+                           th:href="@{/mypage/coupon}">쿠폰 목록</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-7 col-md-7">
+                    <div class="card">
+                      <div class="card-header d-block">
+                        <h3 class="card-title d-inline">재입고 알림 신청 상품</h3>
+                      </div>
+                      <div class="card-body m-auto">
+                        <div class="float-start w-auto d-inline"><span class="mb-3">알림 신청</span>
+                          <span
+                              th:text="${'___건'}"></span></div>
+                        /
+                        <div class="float-end w-auto d-inline"><span class="mb-3">알림 완료</span> <span
+                            th:text="${'___건'}"></span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <h3 class="sub-title">주문 상태</h3>
+                <div class="row row-cards mb-2">
+                  <div class="col-3">
+                    <div class="card card-stacked">
+                      <div class="card-body text-center">
+                        <h3 class="card-title">입금/결제 대기</h3>
+                        <a class="text-muted w-auto btn fw-bold fs-3" id="order-order-btn"
+                           href="javascript:openWindowPop('/mypage/order-popup?code=1&page=0&size=5', 'popup');">-</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="card card-stacked">
+                      <div class="card-body text-center">
+                        <h3 class="card-title">배송 대기</h3>
+                        <a class="text-muted w-auto btn fw-bold fs-3" id="order-ready-btn"
+                           href="javascript:openWindowPop('/mypage/order-popup?code=3&page=0&size=5', 'popup');">-</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="card card-stacked">
+                      <div class="card-body text-center">
+                        <h3 class="card-title">배송중</h3>
+                        <a class="text-muted w-auto btn fw-bold fs-3" id="order-delivery-btn"
+                           href="javascript:openWindowPop('/mypage/order-popup?code=4&page=0&size=5', 'popup');">-</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="card card-stacked">
+                      <div class="card-body text-center">
+                        <h3 class="card-title">배송 완료</h3>
+                        <a class="text-muted w-auto btn fw-bold fs-3" id="order-complete-btn"
+                           href="javascript:openWindowPop('/mypage/order-popup?code=5&page=0&size=5', 'popup');">-</a>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="w-full">
+                    <h3 class="sub-title d-inline">위시 리스트</h3>
+                    <a href="/interest/wishlist?page=0&size=20" class="btn btn-primary w-auto float-end btn-sm d-inline">더 보기</a>
+                  </div>
+                  <div class="card px-2 pb-2">
+                    <div class="multiple-items col-12">
+                      <div class="card m-3" th:each="product : ${wishlist}">
+                        <div class="card-header">
+                          <h3 class="card-title col-10 m-1" th:text="|${product.title}|"
+                              style="text-overflow:ellipsis; white-space: nowrap; overflow: hidden"></h3>
+                        </div>
+                        <a th:href="|/products/${product.id}|">
+                          <div class="img-responsive img-responsive-3x4 card-img-top" th:style="'background-image: url(' + ${product.thumbnailFileUrl} + ');'"></div>
+                        </a>
+                        <div class="card-body">
+                          <div th:each="author, j : ${product.getAuthor()}" style="display: inline">
+                            <p th:text="${author}" style="display: inline"></p>
+                            <p th:if="${!j.last}" style="display: inline">, </p>
+                            <p th:if="${j.last}" style="display: inline">저 |</p>
+                          </div>
+                          <strong th:text="${product.sellingPrice}"></strong>
+                        </div>
+                        <div class="card-footer">
+                          <div class="d-flex">
+                            <a th:href="|/products/${product.id}|"
+                               class="btn btn-dark btn-pill col-7"
+                               th:if="${product.isForcedOutOfStock || product.quantity <= 0}">
+                              <svg xmlns="http://www.w3.org/2000/svg"
+                                   class="icon icon-tabler icon-tabler-vocabulary-off" width="24"
+                                   height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                   fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path
+                                    d="M7 3h3a2 2 0 0 1 2 2a2 2 0 0 1 2 -2h6a1 1 0 0 1 1 1v13m-2 2h-5a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2h-6a1 1 0 0 1 -1 -1v-14c0 -.279 .114 -.53 .298 -.712m8.702 1.712v3m0 4v9m-5 -10h1m8 -4h1m-1 4h1m-14 -8l18 18"></path>
+                              </svg>
+                              품절
+                            </a>
+                            <a th:href="|/products/${product.id}|"
+                               class="btn btn-primary btn-pill col-7"
+                               th:if="${!product.isForcedOutOfStock && product.quantity > 0}">
+                              <svg xmlns="http://www.w3.org/2000/svg"
+                                   class="icon icon-tabler icon-tabler-hand-click" width="24"
+                                   height="24"
+                                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                   fill="none"
+                                   stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path
+                                    d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5m0 -.5v-2a1.5 1.5 0 0 1 3 0v2.5m0 -1.5a1.5 1.5 0 0 1 3 0v1.5m0 -.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7l-.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47m-3 -10l-1 -1m0 5h-1m11 -4l1 -1m0 4h1"></path>
+                              </svg>
+                              상세보기
+                            </a>
+                            <a th:data-id="${product.id}"
+                               th:onclick="wishlistDelete(this.getAttribute('data-id'))"
+                               class="btn btn-danger btn-pill ms-auto">
+                              삭제
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="w-full">
+                    <h3 class="sub-title d-inline">최근 본 상품</h3>
+                    <a href="/interest/recent?page=0&size=10" class="btn btn-primary w-auto float-end btn-sm d-inline">더 보기</a>
+                  </div>
+                  <div class="card px-2 pb-2">
+                    <div class="multiple-items col-12">
+                      <div class="card m-3" th:each="product : ${recentViewList}">
+                          <div class="card-header">
+                            <h3 class="card-title col-10 m-1" th:text="|${product.title}|"
+                                style="text-overflow:ellipsis; white-space: nowrap; overflow: hidden"></h3>
+                          </div>
+                        <a th:href="|/products/${product.id}|">
+                          <div class="img-responsive img-responsive-3x4 card-img-top" th:style="'background-image: url(' + ${product.thumbnailFileUrl} + ');'"></div>
+                        </a>
+                        <div class="card-body">
+                          <div th:each="author, j : ${product.getAuthor()}" style="display: inline">
+                            <p th:text="${author}" style="display: inline"></p>
+                            <p th:if="${!j.last}" style="display: inline">, </p>
+                            <p th:if="${j.last}" style="display: inline">저 |</p>
+                          </div>
+                          <strong th:text="${product.sellingPrice}"></strong>
+                        </div>
+                          <div class="card-footer">
+                            <div class="d-flex">
+                              <a th:href="|/products/${product.id}|"
+                                 class="btn btn-dark btn-pill col-7"
+                                 th:if="${product.isForcedOutOfStock || product.quantity <= 0}">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="icon icon-tabler icon-tabler-vocabulary-off" width="24"
+                                     height="24"
+                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                     fill="none"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                  <path
+                                      d="M7 3h3a2 2 0 0 1 2 2a2 2 0 0 1 2 -2h6a1 1 0 0 1 1 1v13m-2 2h-5a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2h-6a1 1 0 0 1 -1 -1v-14c0 -.279 .114 -.53 .298 -.712m8.702 1.712v3m0 4v9m-5 -10h1m8 -4h1m-1 4h1m-14 -8l18 18"></path>
+                                </svg>
+                                품절
+                              </a>
+                              <a th:href="|/products/${product.id}|"
+                                 class="btn btn-primary btn-pill col-7"
+                                 th:if="${!product.isForcedOutOfStock && product.quantity > 0}">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="icon icon-tabler icon-tabler-hand-click" width="24"
+                                     height="24"
+                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                     fill="none"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                  <path
+                                      d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5m0 -.5v-2a1.5 1.5 0 0 1 3 0v2.5m0 -1.5a1.5 1.5 0 0 1 3 0v1.5m0 -.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7l-.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47m-3 -10l-1 -1m0 5h-1m11 -4l1 -1m0 4h1"></path>
+                                </svg>
+                                상세보기
+                              </a>
+                              <a th:data-id="${product.id}"
+                                 th:onclick="recentViewProductDelete(this.getAttribute('data-id'))"
+                                 class="btn btn-danger btn-pill ms-auto">
+                                삭제
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODO 4 : footer -->
+    <div th:replace="~{common/fragments/footer :: fragment-footer}"></div>
+  </div>
+</div>
+<script>
+  const mypage = document.getElementById("mypage");
+  const frontUrl = `${mypage.getAttribute("data-url")}`;
+  const shopUrl = `${mypage.getAttribute("data-shop-url")}`;
+
+  let statusMap = {};
+
+  window.addEventListener('DOMContentLoaded', (event) => {
+    orderCounter();
+  });
+
+
+  let popup;
+
+  function openWindowPop(url, name) {
+    let options = 'top=100, left=100, width=900, height=500, status=no, menubar=no, location=no, toolbar=no, resizable=no';
+    popup = window.open(url, name, options);
+  }
+
+  function popupCloseEvent(event) {
+    //TODO 주문 상태 개수 변경
+    console.log("popup close");
+  }
+
+  async function orderCounter() {
+    if (Object.keys(statusMap).length === 0) {
+      const response = await fetch(
+          `${frontUrl}/api/orders/status-count`);
+      const body = await response.json();
+      statusMap = body;
+    }
+
+    const orderBtn = document.getElementById("order-order-btn");
+    const readyBtn = document.getElementById("order-ready-btn");
+    const deliveryBtn = document.getElementById("order-delivery-btn");
+    const completeBtn = document.getElementById("order-complete-btn");
+
+    orderBtn.textContent = statusMap["ORDER"] + '건';
+    readyBtn.textContent = statusMap["READY"] + '건';
+    deliveryBtn.textContent = statusMap["DELIVERY"] + '건';
+    completeBtn.textContent = statusMap["COMPLETE"] + '건';
+  }
+
+</script>
+
+<script th:inline="javascript">
+  const gradeBox = document.getElementById("grade-box");
+  const grade = [[${grade}]];
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (grade.id == 2) {
+      gradeBox.style.backgroundColor = "#d2b48c";
+    } else if (grade.id == 3) {
+      gradeBox.style.backgroundColor = "#d3d3d3";
+    } else if (grade.id == 4) {
+      gradeBox.style.backgroundColor = "#fafad2";
+    } else if (grade.id == 5) {
+      gradeBox.style.backgroundColor = "#b0e0e6";
+    }
+  });
+  function getGradeColor() {
+    if (grade.id == 2) {
+      return "tan";
+    } else if (grade.id == 3) {
+      return "lightgray";
+    } else if (grade.id == 4) {
+      return "lightgoldenrodyellow";
+    } else if (grade.id == 5) {
+      return "lightblue";
+    }
+  }
+
+</script>
+
+<script>
+  function recentViewProductDelete(id) {
+    const check = window.confirm('해당 최근 본 상품을 제거하시겠습니까?')
+    if (check === true) {
+      location.replace('/interest/recentview?productid=' + id)
+    }
+  }
+
+  function wishlistDelete(id) {
+    const check = window.confirm('해당 위시리스트를 제거하시겠습니까?')
+    if (check === true) {
+      location.replace('/interest/mypage/delete?productid=' + id)
+    }
+  }
+</script>
+</body>
+</html>

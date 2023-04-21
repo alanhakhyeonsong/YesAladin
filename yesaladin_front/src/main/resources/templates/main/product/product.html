@@ -1,0 +1,511 @@
+<!doctype html>
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta5
+* @link https://tabler.io
+* Copyright 2018-2022 The Tabler Authors
+* Copyright 2018-2022 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Yes Aladin!</title>
+
+    <!-- CSS files -->
+    <link th:href="@{/css/tabler.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/tabler-flags.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/tabler-payments.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/tabler-vendors.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/demo.min.css}" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
+
+    <style>
+        tr {
+            display: block;
+            float: left;
+        }
+        th, td {
+            display: block;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<!-- Libs JS -->
+<script type="text/javascript" th:src="@{/libs/apexcharts/dist/apexcharts.min.js}"></script>
+<!-- Tabler Core -->
+<script type="text/javascript" th:src="@{/js/tabler.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/demo.min.js}"></script>
+<!-- Toast UI -->
+<script src="https://uicdn.toast.com/editor/2.0.0/toastui-editor-all.min.js"></script>
+
+<div class="wrapper">
+    <!-- TODO 1 : HEADER -->
+    <div th:replace="~{common/fragments/header :: fragment-header}"></div>
+
+    <!-- TODO 2 : NAV-BAR -->
+    <div th:replace="~{common/fragments/navbar :: fragment-nav-bar}"></div>
+
+    <!-- TODO 3: BODY -->
+    <div class="page-body">
+        <div class="container">
+            <div class="card">
+                <form id="product" method="get">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div>
+                            <h2 class="badge bg-purple-lt" th:if="${productDetailResponseDto.getIsEbook()} == true" style="display: inline">E-Book</h2>
+                            <h2 class="badge bg-green-lt" th:if="${productDetailResponseDto.getIsSubscriptionAvailable()} == true">구독상품</h2>
+                        </div>
+                        <h1 style="word-break: break-all" th:text="${productDetailResponseDto.getTitle()}"></h1>
+                        <h3>저자 :
+                            <div th:each="author, j : ${productDetailResponseDto.getAuthors()}" style="display: inline">
+                                <p th:text="${author.name}" style="display: inline"></p>
+                                <p th:if="${!j.last}" style="display: inline">,</p>
+                            </div>
+                            | 출판사 : <p th:text="${productDetailResponseDto.getPublisher().name}" style="display: inline"></p></h3>
+                    </div>
+                </div>
+
+                <div class="card-body divide-y-4">
+                    <div class="row g-2 g-md-3 divide-x">
+                        <div class="col-4">
+                            <div class="img-responsive img-responsive-3x4 rounded-3 border"
+                                 th:style="|background-image: url(${productDetailResponseDto.getThumbnailFileUrl()})|"></div>
+                        </div>
+                        <div class="col-8 divide-y">
+                            <div class="col-12 p-2">
+                                <p th:text="|정가 : ${#numbers.formatInteger(productDetailResponseDto.getActualPrice(), 1, 'COMMA')}원|"></p>
+                                <p th:text="|판매가(할인율) : ${#numbers.formatInteger(productDetailResponseDto.getSellingPrice(), 1, 'COMMA')}원(${productDetailResponseDto.getDiscountRate()}%)|"></p>
+                                <p th:text="|포인트 적립금(포인트 적립율) : ${#numbers.formatInteger(productDetailResponseDto.getPointPrice(), 1, 'COMMA')}원(${productDetailResponseDto.getPointRate()}%)|"></p>
+                            </div>
+                            <div class="col-12 p-2">
+                                 배송비 : <p class="d-inline" th:text="${productDetailResponseDto.getSellingPrice()} >= 20000 ? '무료' : '3,000원'"></p>
+                            </div>
+                            <div class="col-12 p-2" th:if="${productDetailResponseDto.isOnSale()}">
+                                <div class="row p-1 text-lg-end">
+                                    <div>
+                                        <h3 class="p-2 d-inline">수량</h3>
+                                        <button type="button" class="btn btn-secondary btn-icon"
+                                                onclick="downQuantity()" style="width: 35px"
+                                                th:disabled="${productDetailResponseDto.getIsEbook() || productDetailResponseDto.getIsSubscriptionAvailable()}">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="icon icon-tabler icon-tabler-minus m-0" width="24" height="24"
+                                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                 fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M5 12l14 0"></path>
+                                            </svg>
+                                        </button>
+                                        <input type="number" class="form-control d-inline text-center" min="1" max="9999"
+                                               th:readonly="${productDetailResponseDto.isEbook}" value="1"
+                                               id="quantity" maxlength="4" name="quantity" style="width:60px;" >
+                                        <button type="button" class="btn btn-secondary btn-icon"
+                                                onclick="upQuantity()" style="width: 35px"
+                                                th:disabled="${productDetailResponseDto.getIsEbook() || productDetailResponseDto.getIsSubscriptionAvailable()}">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="icon icon-tabler icon-tabler-plus m-0" width="24" height="24"
+                                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                 fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M12 5l0 14"></path>
+                                                <path d="M5 12l14 0"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row p-1">
+                                    <div class="col-6 px-1">
+<!--                                        <button type="button" class="btn btn-twitter w-100" data-bs-toggle="modal" data-bs-target="#modal-cart-success">-->
+                                        <button type="button" class="btn btn-twitter w-100" id="cart-event">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="icon icon-tabler icon-tabler-shopping-cart-plus" width="24"
+                                                 height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                 fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                                <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                                <path d="M17 17h-11v-14h-2"></path>
+                                                <path d="M6 5l6 .429m7.138 6.573l-.143 1h-13"></path>
+                                                <path d="M15 6h6m-3 -3v6"></path>
+                                            </svg>
+                                            장바구니
+                                        </button>
+                                    </div>
+                                    <div class="col-6 px-1" th:if="${isWishlist == false}">
+                                        <a type="button" class="btn btn-dribbble w-100" th:href="|/interest/${productDetailResponseDto.id}|">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="icon icon-tabler icon-tabler-heart" width="24" height="24"
+                                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                 stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path>
+                                            </svg>
+                                            위시리스트 추가
+                                        </a>
+                                    </div>
+                                    <div class="col-6 px-1" th:if="${isWishlist == true}">
+                                        <a type="button" class="btn btn-dribbble w-100" th:href="|/interest/delete?productid=${productDetailResponseDto.id}|">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="icon icon-tabler icon-tabler-heart" width="24" height="24"
+                                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                 stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path>
+                                            </svg>
+                                            위시리스트 삭제
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- 정기구독 불가능 -->
+                                <div class="row px-2 py-1" th:if="${!productDetailResponseDto.isSubscriptionAvailable}">
+                                    <button type="submit" form="product"
+                                            onclick="orderProduct()"
+                                            class="btn btn-facebook w-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             class="icon icon-tabler icon-tabler-brand-cashapp" width="24" height="24"
+                                             viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                             stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M17.1 8.648a0.568 .568 0 0 1 -.761 .011a5.682 5.682 0 0 0 -3.659 -1.34c-1.102 0 -2.205 .363 -2.205 1.374c0 1.023 1.182 1.364 2.546 1.875c2.386 .796 4.363 1.796 4.363 4.137c0 2.545 -1.977 4.295 -5.204 4.488l-.295 1.364a0.557 .557 0 0 1 -.546 .443h-2.034l-.102 -.011a0.568 .568 0 0 1 -.432 -.67l.318 -1.444a7.432 7.432 0 0 1 -3.273 -1.784v-.011a0.545 .545 0 0 1 0 -.773l1.137 -1.102c.214 -.2 .547 -.2 .761 0a5.495 5.495 0 0 0 3.852 1.5c1.478 0 2.466 -.625 2.466 -1.614c0 -.989 -1 -1.25 -2.886 -1.954c-2 -.716 -3.898 -1.728 -3.898 -4.091c0 -2.75 2.284 -4.091 4.989 -4.216l.284 -1.398a0.545 .545 0 0 1 .545 -.432h2.023l.114 .012a0.544 .544 0 0 1 .42 .647l-.307 1.557a8.528 8.528 0 0 1 2.818 1.58l.023 .022c.216 .228 .216 .569 0 .773l-1.057 1.057z"></path>
+                                        </svg>
+                                        구매하기
+                                    </button>
+                                </div>
+                                <!-- 정기구독 가능 -->
+                                <div class="row p-1" th:if="${productDetailResponseDto.getIsSubscriptionAvailable()}">
+                                    <div class="col-6 px-1">
+                                        <button type="submit" form="product" class="btn btn-facebook w-100"
+                                                onclick="form.action='/orders/order-sheets'">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="icon icon-tabler icon-tabler-brand-cashapp" width="24" height="24"
+                                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                 stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M17.1 8.648a0.568 .568 0 0 1 -.761 .011a5.682 5.682 0 0 0 -3.659 -1.34c-1.102 0 -2.205 .363 -2.205 1.374c0 1.023 1.182 1.364 2.546 1.875c2.386 .796 4.363 1.796 4.363 4.137c0 2.545 -1.977 4.295 -5.204 4.488l-.295 1.364a0.557 .557 0 0 1 -.546 .443h-2.034l-.102 -.011a0.568 .568 0 0 1 -.432 -.67l.318 -1.444a7.432 7.432 0 0 1 -3.273 -1.784v-.011a0.545 .545 0 0 1 0 -.773l1.137 -1.102c.214 -.2 .547 -.2 .761 0a5.495 5.495 0 0 0 3.852 1.5c1.478 0 2.466 -.625 2.466 -1.614c0 -.989 -1 -1.25 -2.886 -1.954c-2 -.716 -3.898 -1.728 -3.898 -4.091c0 -2.75 2.284 -4.091 4.989 -4.216l.284 -1.398a0.545 .545 0 0 1 .545 -.432h2.023l.114 .012a0.544 .544 0 0 1 .42 .647l-.307 1.557a8.528 8.528 0 0 1 2.818 1.58l.023 .022c.216 .228 .216 .569 0 .773l-1.057 1.057z"></path>
+                                            </svg>
+                                            구매하기
+                                        </button>
+                                    </div>
+                                    <div class="col-6 px-1">
+                                        <button type="submit" class="btn btn-facebook w-100"
+                                           onclick="form.action='/orders/subscribe-sheets'">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-stats" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4"></path>
+                                                <path d="M18 14v4h4"></path>
+                                                <path d="M18 18m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                                                <path d="M15 3v4"></path>
+                                                <path d="M7 3v4"></path>
+                                                <path d="M3 11h16"></path>
+                                            </svg>
+                                            정기구독
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 p-2" th:if="${!productDetailResponseDto.isOnSale()}">
+                                <a href="#" class="btn btn-dark w-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-vocabulary-off" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M7 3h3a2 2 0 0 1 2 2a2 2 0 0 1 2 -2h6a1 1 0 0 1 1 1v13m-2 2h-5a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2h-6a1 1 0 0 1 -1 -1v-14c0 -.279 .114 -.53 .298 -.712m8.702 1.712v3m0 4v9m-5 -10h1m8 -4h1m-1 4h1m-14 -8l18 18"></path>
+                                    </svg>
+                                    구매 불가능
+                                </a>
+                            </div>
+                            <div th:replace="~{common/fragments/alert :: custom-alert}"></div>
+                        </div>
+                    </div>
+                    <div class="row g-2 p-3" id="relation-div">
+                        <div>
+                        <h2 class="float-start m-1">연관상품</h2>
+                        <ul class="pagination float-end m-1">
+                            <li class="page-item">
+                                    <a class="page-link" tabindex="-1" aria-disabled="true" onclick="preRelation()" id="pre">
+                                        <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M15 6l-6 6l6 6"></path></svg>
+                                    </a>
+                            </li>
+                            <li class="page-item"><a class="page-link" id="relation-page">1</a></li>
+                            <li class="page-item">
+                                <a class="page-link" tabindex="-1" aria-disabled="true" onclick="postRelation()" id="post">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 6l6 6l-6 6"></path></svg>
+                                </a>
+                            </li>
+                        </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="col-12">
+                                    <tbody class="divide-x" id="relation-table">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-2 divide-y p-3">
+                        <div class="col-12">
+                            <h2>품목정보</h2>
+                            <p th:text="|출판일 : ${productDetailResponseDto.getPublishedDate()}|"></p>
+                            <p th:text="|ISBN13 : ${productDetailResponseDto.getIsbn()}|"></p>
+                            <input type="hidden" name="isbn" th:value="${productDetailResponseDto.getIsbn()}">
+                            <div th:if="${productDetailResponseDto.getIsSubscriptionAvailable()} == true">
+                                <p th:text="|ISSN11 : ${productDetailResponseDto.getIssn()}|" name="issn"></p>
+                            </div>
+                        </div>
+                        <div class="col-12" th:if="${productDetailResponseDto.getCategories().size() != 0}">
+                            <h2>카테고리 분류</h2>
+                            <div th:each="category : ${productDetailResponseDto.getCategories()}">
+                                <p th:text="${category.parentName} + ' >> ' + ${category.name}"></p>
+                            </div>
+                        </div>
+                        <div class="col-12" th:if="${productDetailResponseDto.getTags().size() != 0}">
+                            <h2>태그</h2>
+                            <span class="badge bg-azure-lt" th:each="tag : ${productDetailResponseDto.getTags()}" th:text="|${tag.name}|" style="margin: 2px"></span>
+                        </div>
+                        <div class="col-12">
+                            <h2>목차</h2>
+                            <p th:text="${productDetailResponseDto.getContents()}"></p>
+                        </div>
+                        <div class="col-12">
+                            <h2>책 소개</h2>
+                            <div id="viewer"></div>
+                            <input type="hidden" id="description" th:value="${productDetailResponseDto.getDescription()}">
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- TODO 4 : footer -->
+    <div th:replace="~{common/fragments/footer :: fragment-footer}"></div>
+</div>
+<input type="hidden" class="d-none" id="product-id" th:value="${productDetailResponseDto.getId()}">
+<div class="d-none" id="shop-server-url" th:text="${@environment.getProperty('yesaladin.gateway.shop')}"></div>
+<div class="d-none" id="front-server-url" th:text="${@environment.getProperty('yesaladin.front.url')}"></div>
+<input type="hidden" class="d-none" id="is-ebook" th:value="${productDetailResponseDto.getIsEbook()}">
+<input type="hidden" class="d-none" id="is-subscription-available" th:value="${productDetailResponseDto.getIsSubscriptionAvailable()}">
+<button type="button" id="hidden-cart-event" class="d-none" data-bs-toggle="modal" data-bs-target="#modal-cart-success"></button>
+<div class="modal modal-blur fade" id="modal-cart-success" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-status bg-success"></div>
+            <div class="modal-body text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-green icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path><path d="M9 12l2 2l4 -4"></path></svg>
+                <h3>해당 상품이 장바구니에 담겼습니다.</h3>
+                <div class="text-muted"><br/>바로 확인하시겠습니까?<p th:if="${productDetailResponseDto.isSubscriptionAvailable || productDetailResponseDto.isEbook}"><br/>단, E-book 또는 구독상품인 경우,<br/>각 1권씩만 담을 수 있습니다.</p></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="dismiss-modal" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">아니요</button>
+                <a href="/cart" class="btn btn-success">예, 확인하겠습니다.</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+    let PRODUCT_ID = document.getElementById('product-id').value;
+    let FRONT_SERVER = document.getElementById('front-server-url').textContent;
+    let SHOP_SERVER = document.getElementById('shop-server-url').textContent;
+    let IS_EBOOK = document.getElementById('is-ebook').value;
+    let IS_SUBSCRIPTION_AVAILABLE = document.getElementById('is-subscription-available').value;
+
+    function orderProduct() {
+        let quantityRegex = /^[+]?\d*(\.?\d*)?$/;
+        const quantity = document.getElementById('quantity').value;
+        const isbn = [[${productDetailResponseDto.isbn}]];
+
+        if (!quantityRegex.test(quantity) || quantity == 0) {
+            writeContentToAlert('올바른 수량을 입력해주세요.(1 이상의 숫자)');
+            return;
+        }
+        fetch(SHOP_SERVER + "/v1/products/quantity/" + PRODUCT_ID, {
+            method: "GET"
+        }).then(res => res.json()).then(response => {
+            if (quantity > response.data) {
+                writeContentToAlert("구매 가능한 수량을 초과하였습니다! => 재고 : " + response.data);
+            } else {
+                const quantity = document.getElementById('quantity').value;
+
+                location.replace(`${FRONT_SERVER}/orders/order-sheets?isbn=${isbn}&quantity=${quantity}&type=one`);
+            }
+        })
+    }
+    document.getElementById('cart-event').addEventListener('click', function (event) {
+        let quantityRegex = /^[+]?\d*(\.?\d*)?$/;
+        const quantity = document.getElementById('quantity').value;
+
+        if (!quantityRegex.test(quantity) || quantity == 0 || quantity.toString().includes(".") === true) {
+            writeContentToAlert('올바른 수량을 입력해주세요.(1 이상의 숫자)');
+            return;
+        }
+
+        fetch(SHOP_SERVER + "/v1/products/quantity/" + PRODUCT_ID, {
+            method: "GET"
+        }).then(res => res.json()).then(response => {
+            if (quantity > response.data) {
+                writeContentToAlert("구매 가능한 수량을 초과하였습니다! => 재고 : " + response.data);
+            } else {
+                const quantity = document.getElementById('quantity').value;
+
+                fetch(FRONT_SERVER + '/cart', {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    method: "POST",
+                    body: JSON.stringify({
+                        id : PRODUCT_ID,
+                        quantity : quantity,
+                        isEbook : IS_EBOOK,
+                        isSubscriptionAvailable: IS_SUBSCRIPTION_AVAILABLE
+                    })
+                }).then(res => res.json()).then(response => {
+                    console.log(response);
+                    if (response.success === false) {
+                        writeContentToAlert(response.data);
+                        return;
+                    } else {
+                        document.getElementById('hidden-cart-event').click();
+                    }
+                });
+            }
+        })
+
+    })
+</script>
+<script>
+    const viewer = toastui.Editor.factory({
+        el: document.querySelector('#viewer'),
+        viewer: true,
+        height: '500px',
+        initialValue: document.querySelector('#description').value
+    })
+</script>
+<script>
+    function downQuantity() {
+        const quantity = document.getElementById("quantity");
+        if (quantity.value > 1) {
+            --quantity.value;
+        }
+    }
+
+    function upQuantity() {
+        const quantity = document.getElementById("quantity");
+        ++quantity.value;
+    }
+</script>
+<script>
+    const relationPage = document.getElementById('relation-page');
+    window.addEventListener('DOMContentLoaded', function() {
+        let page = parseInt(relationPage.innerText);
+
+        makeRelations(page);
+
+        relationPage.innerText = page.toString();
+    });
+
+    function preRelation() {
+        let page = parseInt(relationPage.innerText) - 1;
+
+        makeRelations(page);
+
+        relationPage.innerText = page.toString();
+    }
+    function postRelation() {
+        let page = parseInt(relationPage.innerText) + 1;
+
+        makeRelations(page);
+
+        relationPage.innerText = page.toString();
+
+    }
+
+    function makeRelations(page) {
+        const pre = document.getElementById("pre");
+        const post = document.getElementById("post");
+
+        const relationTable = document.getElementById('relation-table');
+        fetch(SHOP_SERVER + "/v1/products/" + PRODUCT_ID + "/relations?size=4&page=" + (page - 1), {
+            method: "GET"
+        })
+            .then(res => {
+                return res.json();
+            })
+            .then(response => {
+                if (response.data.totalDataCount === 0) {
+                    document.getElementById('relation-div').classList.add('d-none');
+                    return;
+                }
+
+                while (relationTable.firstChild) {
+                    relationTable.removeChild(relationTable.firstChild);
+                }
+
+                console.log("length : " + response.data.dataList.length);
+                for (let i = 0; i < response.data.dataList.length; i++) {
+                    const tr = document.createElement('tr');
+                    tr.classList.add('col-3', 'p-0');
+
+                    const tdThumbnail = document.createElement('td');
+                    const aThumbnail = document.createElement('a');
+                    aThumbnail.href = "/products/" + response.data.dataList[i].id;
+                    const imgThumbnail = document.createElement('img');
+                    imgThumbnail.src = response.data.dataList[i].thumbnailFileUrl;
+                    imgThumbnail.style = 'width: 150px';
+                    imgThumbnail.classList.add('border', 'rounded-2');
+                    aThumbnail.append(imgThumbnail);
+                    tdThumbnail.append(aThumbnail);
+
+                    const tdTitle = document.createElement('td');
+                    const h3Title = document.createElement('h3');
+                    h3Title.classList.add('p-0', 'm-0');
+                    const aTitle = document.createElement('a');
+                    aTitle.href = "/products/" + response.data.dataList[i].id;
+                    aTitle.innerText = response.data.dataList[i].title;
+                    aTitle.classList.add('text-dark');
+                    h3Title.append(aTitle);
+                    tdTitle.append(h3Title);
+
+                    const tdMakers = document.createElement('td');
+                    tdMakers.innerText = response.data.dataList[i].authors + " 저 | " + response.data.dataList[i].publisher;
+
+                    const tdPrice = document.createElement('td');
+                    tdPrice.innerText = response.data.dataList[i].sellingPrice.toLocaleString() + "원(" + response.data.dataList[i].rate + "%)";
+                    tdPrice.classList.add('strong');
+
+                    tr.append(tdThumbnail, tdTitle, tdMakers, tdPrice);
+
+                    relationTable.append(tr);
+                }
+
+                if ((page - 1) <= 0) {
+                    pre.classList.add('visually-hidden');
+                } else {
+                    pre.classList.remove('visually-hidden');
+                }
+
+                if (page >= response.data.totalPage){
+                    post.classList.add('visually-hidden');
+                } else {
+                    post.classList.remove('visually-hidden');
+                }
+            })
+            .catch(err => console.log(err));
+    }
+</script>
+</body>
+</html>
