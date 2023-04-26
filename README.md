@@ -3,6 +3,8 @@ NHN Academy 프로젝트 인증 과정에서의 YesAladin Team Project 입니다
 
 스크럼마스터로서 전체 프로젝트 중 담당하여 작업했던 서버 프로젝트들만 이 곳에 저장하였습니다.
 
+![image](https://user-images.githubusercontent.com/60968342/234529079-9a04a554-5b5d-436b-bfdc-ebb32a2e1f87.png)
+
 - 프로젝트 기간: 2022.12.26 ~ 2023.03.03
 - 전체 프로젝트 Repository: https://github.com/NHN-YesAladin
 - 자세한 README는 해당 프로젝트 내의 README를 참조해주세요.
